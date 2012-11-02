@@ -1,0 +1,3 @@
+[submodule "MessagePump/submodules/OOOCode"]
+	path = MessagePump/submodules/OOOCode
+	url = https://github.com/pghalliday/OOOCode.git
