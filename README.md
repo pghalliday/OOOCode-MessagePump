@@ -98,7 +98,7 @@ To implement an OOOIMessageListener...
 ```C
 #include "OOOMessagePump.h"
 
-#define OOOClass MessagePumpTest
+#define OOOClass MyAsynchronousComponent
 OOODeclare()
 	OOOImplements
 		OOOImplement(OOOIMessageListener)
