@@ -109,12 +109,11 @@ OOODeclareEnd
 
 OOOPrivateData
 	OOOMessagePump * pMessagePump;
-	unsigned int uHandledCount;
 OOOPrivateDataEnd
 
 OOODestructor
 {
-	OOOCall(pMessagePump, removeListener, OOOCast(OOOIMessageListener, OOOThis);
+	OOOCall(pMessagePump, removeListener, OOOCast(OOOIMessageListener, OOOThis));
 }
 OOODestructorEnd
 
@@ -142,7 +141,7 @@ OOOConstructor(OOOMessagePump pMessagePump)
 	OOOMapMethodsEnd
 
 	OOOF(pMessagePump) = pMessagePump;
-	OOOCall(pMessagePump, addListener, OOOCast(OOOIMessageListener, OOOThis);
+	OOOCall(pMessagePump, addListener, OOOCast(OOOIMessageListener, OOOThis));
 }
 OOOConstructorEnd
 #undef OOOClass
