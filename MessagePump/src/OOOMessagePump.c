@@ -108,10 +108,10 @@ OOOMethodEnd
 OOOConstructor()
 {
 	OOOMapMethods
-		OOOMethodMapping(start)
-		OOOMethodMapping(stop)
-		OOOMethodMapping(addHandler)
-		OOOMethodMapping(removeHandler)
+		OOOMapMethod(start)
+		OOOMapMethod(stop)
+		OOOMapMethod(addHandler)
+		OOOMapMethod(removeHandler)
 	OOOMapMethodsEnd
 }
 OOOConstructorEnd

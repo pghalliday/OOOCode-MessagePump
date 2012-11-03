@@ -43,7 +43,7 @@ OOOMethod(bool, doMessage, o_message * pMessage)
 		if (O_msg_type(pMessage) == 2)
 		{
 			/* remove self from message handlers once */
-			OOOCall(OOOF(pMessagePump), removeHandler, OOOCast(IMessageHandler, OOOThis));
+			OOOCall(OOOF(pMessagePump), removeHandler, OOOCast(OOOIMessageHandler, OOOThis));
 			bHandled = TRUE;
 		}
 		else if (O_msg_type(pMessage) == 3)
@@ -99,19 +99,19 @@ OOOConstructor()
 {
 #define OOOInterface OOOIMessagePumpController
 	OOOMapVirtuals
-		OOOVirtualMapping(started)
-		OOOVirtualMapping(stopped)
+		OOOMapVirtual(started)
+		OOOMapVirtual(stopped)
 	OOOMapVirtualsEnd
 #undef OOOInterface
 
 #define OOOInterface OOOIMessageHandler
 	OOOMapVirtuals
-		OOOVirtualMapping(doMessage)
+		OOOMapVirtual(doMessage)
 	OOOMapVirtualsEnd
 #undef OOOInterface
 
 	OOOMapMethods
-		OOOMethodMapping(start)
+		OOOMapMethod(start)
 	OOOMapMethodsEnd
 
 	OOOF(pMessagePump) = OOOConstruct(OOOMessagePump);
