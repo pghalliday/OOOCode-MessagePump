@@ -5,7 +5,7 @@
 OOODeclare()
 	OOOImplements
 		OOOImplement(OOOIMessagePumpController)
-		OOOImplement(OOOIMessageHandler)
+		OOOImplement(OOOIMessageListener)
 	OOOImplementsEnd
 	OOOExports
 		OOOExport(void, start)
@@ -34,7 +34,7 @@ OOOMethod(void, stopped)
 }
 OOOMethodEnd
 
-OOOMethod(bool, doMessage, o_message * pMessage)
+OOOMethod(bool, onMessage, o_message * pMessage)
 {
 	bool bHandled = FALSE;
 	if (O_msg_class(pMessage) == 10000)
@@ -43,7 +43,7 @@ OOOMethod(bool, doMessage, o_message * pMessage)
 		if (O_msg_type(pMessage) == 2)
 		{
 			/* remove self from message handlers once */
-			OOOCall(OOOF(pMessagePump), removeHandler, OOOCast(OOOIMessageHandler, OOOThis));
+			OOOCall(OOOF(pMessagePump), removeListener, OOOCast(OOOIMessageListener, OOOThis));
 			bHandled = TRUE;
 		}
 		else if (O_msg_type(pMessage) == 3)
@@ -67,8 +67,8 @@ OOOMethod(void, started)
 	o_message tMessage;
 
 	// Add self as message handler twice
-	OOOCall(OOOF(pMessagePump), addHandler, OOOCast(OOOIMessageHandler, OOOThis));
-	OOOCall(OOOF(pMessagePump), addHandler, OOOCast(OOOIMessageHandler, OOOThis));
+	OOOCall(OOOF(pMessagePump), addListener, OOOCast(OOOIMessageListener, OOOThis));
+	OOOCall(OOOF(pMessagePump), addListener, OOOCast(OOOIMessageListener, OOOThis));
 
 	// Post some messages
 	tMessage.msg_class = 10000;
@@ -104,9 +104,9 @@ OOOConstructor()
 	OOOMapVirtualsEnd
 #undef OOOInterface
 
-#define OOOInterface OOOIMessageHandler
+#define OOOInterface OOOIMessageListener
 	OOOMapVirtuals
-		OOOMapVirtual(doMessage)
+		OOOMapVirtual(onMessage)
 	OOOMapVirtualsEnd
 #undef OOOInterface
 

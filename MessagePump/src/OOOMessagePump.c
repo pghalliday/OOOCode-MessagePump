@@ -5,7 +5,7 @@
 typedef struct _MessageHandlers MessageHandlers;
 struct _MessageHandlers
 {
-	OOOIMessageHandler * iMessageHandler;
+	OOOIMessageListener * iMessageHandler;
 	MessageHandlers * pNext;
 };
 
@@ -34,7 +34,7 @@ OOOMethod(void, stop)
 }
 OOOMethodEnd
 
-OOOMethod(void, addHandler, OOOIMessageHandler * iMessageHandler)
+OOOMethod(void, addListener, OOOIMessageListener * iMessageHandler)
 {
 	MessageHandlers * pNew = O_malloc(sizeof(MessageHandlers));
 	pNew->pNext = OOOF(pMessageHandlers);
@@ -43,7 +43,7 @@ OOOMethod(void, addHandler, OOOIMessageHandler * iMessageHandler)
 }
 OOOMethodEnd
 
-OOOMethod(void, removeHandler, OOOIMessageHandler * iMessageHandler)
+OOOMethod(void, removeListener, OOOIMessageListener * iMessageHandler)
 {
 	MessageHandlers * pNext = OOOF(pMessageHandlers);
 	MessageHandlers * pPrevious = NULL;
@@ -93,7 +93,7 @@ OOOMethod(void, start, OOOIMessagePumpController * iMessagePumpController)
 		{
 			pPrevious = OOOF(pIteratorNext);
 			OOOF(pIteratorNext) = OOOF(pIteratorNext)->pNext;
-			if (OOOICall(pPrevious->iMessageHandler, doMessage, &tMessage))
+			if (OOOICall(pPrevious->iMessageHandler, onMessage, &tMessage))
 			{
 				break;
 			}
@@ -110,8 +110,8 @@ OOOConstructor()
 	OOOMapMethods
 		OOOMapMethod(start)
 		OOOMapMethod(stop)
-		OOOMapMethod(addHandler)
-		OOOMapMethod(removeHandler)
+		OOOMapMethod(addListener)
+		OOOMapMethod(removeListener)
 	OOOMapMethodsEnd
 }
 OOOConstructorEnd

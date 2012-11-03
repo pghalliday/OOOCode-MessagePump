@@ -5,16 +5,152 @@ An OOOCode module for managing asynchronous messages
 
 ## Features
 
-- Watch this space
+- Should be able to start and stop the message pump
+- Should be able to add and remove message handlers
 
 ## API
 
+The API exposes 2 interfaces
+
+- ```OOOIMessagePumpController```
+	- intended for implementation by a parent application to start and stop the message pump
+- ```OOOIMessageListener```
+	- intended for use by components that need to listen for asynchrounous messages
+
+To implement an OOOIMessagePumpController...
+
 ```C
+#include "OOOMessagePump.h"
+
+#define OOOClass MyApplication
+OOODeclare()
+	OOOImplements
+		OOOImplement(OOOIMessagePumpController)
+	OOOImplementsEnd
+	OOOExports
+		OOOExport(void, start)
+		OOOExport(void, stop)
+	OOOExportsEnd
+OOODeclareEnd
+
+OOOPrivateData
+	OOOMessagePump * pMessagePump;
+OOOPrivateDataEnd
+
+OOODestructor
+{
+	OOODestroy(OOOF(pMessagePump));
+}
+OOODestructorEnd
+
+OOOMethod(void, stopped)
+{
+	/*
+	Message pump has stopped
+	*/
+}
+OOOMethodEnd
+
+OOOMethod(void, stop)
+{
+	OOOCall(OOOF(pMessagePump), stop);
+}
+OOOMethodEnd
+
+OOOMethod(void, started)
+{
+	/*
+	Message pump has now started. Can continue
+	constructing the application components that
+	require a running message pump
+	*/
+}
+OOOMethodEnd
+
+OOOMethod(void, start)
+{
+	OOOCall(OOOF(pMessagePump), start, OOOCast(OOOIMessagePumpController, OOOThis));
+}
+OOOMethodEnd
+
+OOOConstructor()
+{
+#define OOOInterface OOOIMessagePumpController
+	OOOMapVirtuals
+		OOOMapVirtual(started)
+		OOOMapVirtual(stopped)
+	OOOMapVirtualsEnd
+#undef OOOInterface
+
+	OOOMapMethods
+		OOOMapMethod(start)
+		OOOMapMethod(stop)
+	OOOMapMethodsEnd
+
+	OOOF(pMessagePump) = OOOConstruct(OOOMessagePump);
+}
+OOOConstructorEnd
+#undef OOOClass
+```
+
+To implement an OOOIMessageListener...
+
+```C
+#include "OOOMessagePump.h"
+
+#define OOOClass MessagePumpTest
+OOODeclare()
+	OOOImplements
+		OOOImplement(OOOIMessageListener)
+	OOOImplementsEnd
+	OOOExports
+	OOOExportsEnd
+OOODeclareEnd
+
+OOOPrivateData
+	OOOMessagePump * pMessagePump;
+	unsigned int uHandledCount;
+OOOPrivateDataEnd
+
+OOODestructor
+{
+	OOOCall(pMessagePump, removeListener, OOOCast(OOOIMessageListener, OOOThis);
+}
+OOODestructorEnd
+
+OOOMethod(bool, onMessage, o_message * pMessage)
+{
+	bool bHandled = FALSE;
+
+	/*
+	Handle the message
+	*/
+
+	return bHandled;
+}
+OOOMethodEnd
+
+OOOConstructor(OOOMessagePump pMessagePump)
+{
+#define OOOInterface OOOIMessageListener
+	OOOMapVirtuals
+		OOOMapVirtual(onMessage)
+	OOOMapVirtualsEnd
+#undef OOOInterface
+
+	OOOMapMethods
+	OOOMapMethodsEnd
+
+	OOOF(pMessagePump) = pMessagePump;
+	OOOCall(pMessagePump, addListener, OOOCast(OOOIMessageListener, OOOThis);
+}
+OOOConstructorEnd
+#undef OOOClass
 ```
 
 ## Roadmap
 
-* Should pump messages
+- Nothing planned
 
 ## Contributing
 
