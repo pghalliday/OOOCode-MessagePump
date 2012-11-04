@@ -31,6 +31,9 @@ OOOMethod(void, stopped)
 	 * should be 7
 	 */
 	OOOCheck(OOOF(uHandledCount) == 7);
+
+	/* stop should return FALSE if already stopped */
+	OOOCheck(!OOOCall(OOOF(pMessagePump), stop));
 }
 OOOMethodEnd
 
@@ -48,8 +51,8 @@ OOOMethod(bool, onMessage, o_message * pMessage)
 		}
 		else if (O_msg_type(pMessage) == 3)
 		{
-			/* stop the message pump once */
-			OOOCall(OOOF(pMessagePump), stop);
+			/* stop should return TRUE if stopped OK */
+			OOOCheck(OOOCall(OOOF(pMessagePump), stop));
 			bHandled = TRUE;
 		}
 		else
@@ -86,12 +89,16 @@ OOOMethod(void, started)
 	tMessage.msg_class = 10000;
 	tMessage.type = 3;
 	assert(O_post_message(&tMessage) == GOOD);
+
+	/* start should return FALSE if already started */
+	OOOCheck(!OOOCall(OOOF(pMessagePump), start, OOOCast(OOOIMessagePumpController, OOOThis)));
 }
 OOOMethodEnd
 
 OOOMethod(void, start)
 {
-	OOOCall(OOOF(pMessagePump), start, OOOCast(OOOIMessagePumpController, OOOThis));
+	/* start should return TRUE if started OK */
+	OOOCheck(OOOCall(OOOF(pMessagePump), start, OOOCast(OOOIMessagePumpController, OOOThis)));
 }
 OOOMethodEnd
 

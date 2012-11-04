@@ -10,8 +10,8 @@ OOODeclare()
 	OOOImplements
 	OOOImplementsEnd
 	OOOExports
-		OOOExport(void, start, OOOIMessagePumpController * iMessagePumpController)
-		OOOExport(void, stop)
+		OOOExport(bool, start, OOOIMessagePumpController * iMessagePumpController)
+		OOOExport(bool, stop)
 		OOOExport(void, addListener, OOOIMessageListener * iMessageHandler)
 		OOOExport(void, removeListener, OOOIMessageListener * iMessageHandler)
 	OOOExportsEnd

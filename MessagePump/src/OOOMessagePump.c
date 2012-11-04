@@ -28,9 +28,15 @@ OOODestructor
 }
 OOODestructorEnd
 
-OOOMethod(void, stop)
+OOOMethod(bool, stop)
 {
-	OOOF(bCanContinue) = FALSE;
+	bool bStopped = FALSE;
+	if (OOOF(bCanContinue))
+	{
+		OOOF(bCanContinue) = FALSE;
+		bStopped = TRUE;
+	}
+	return bStopped;
 }
 OOOMethodEnd
 
@@ -74,34 +80,40 @@ OOOMethod(void, removeListener, OOOIMessageListener * iMessageHandler)
 }
 OOOMethodEnd
 
-OOOMethod(void, start, OOOIMessagePumpController * iMessagePumpController)
+OOOMethod(bool, start, OOOIMessagePumpController * iMessagePumpController)
 {
-	o_message tMessage;
-
-	OOOF(bCanContinue) = TRUE;
-
-	/* Notify controller that we're ready immediately */
-	OOOICall(iMessagePumpController, started);
-
-	/* Wait for events until stopped */
-	while (OOOF(bCanContinue))
+	bool bStarted = FALSE;
+	if (!OOOF(bCanContinue))
 	{
-		MessageHandlers * pPrevious = NULL;
-		OOOF(pIteratorNext) = OOOF(pMessageHandlers);
-		O_ui_get_event_wait(&tMessage);
-		while (OOOF(pIteratorNext))
+		o_message tMessage;
+
+		OOOF(bCanContinue) = TRUE;
+
+		/* Notify controller that we're ready immediately */
+		OOOICall(iMessagePumpController, started);
+
+		/* Wait for events until stopped */
+		while (OOOF(bCanContinue))
 		{
-			pPrevious = OOOF(pIteratorNext);
-			OOOF(pIteratorNext) = OOOF(pIteratorNext)->pNext;
-			if (OOOICall(pPrevious->iMessageHandler, onMessage, &tMessage))
+			MessageHandlers * pPrevious = NULL;
+			OOOF(pIteratorNext) = OOOF(pMessageHandlers);
+			O_ui_get_event_wait(&tMessage);
+			while (OOOF(pIteratorNext))
 			{
-				break;
+				pPrevious = OOOF(pIteratorNext);
+				OOOF(pIteratorNext) = OOOF(pIteratorNext)->pNext;
+				if (OOOICall(pPrevious->iMessageHandler, onMessage, &tMessage))
+				{
+					break;
+				}
 			}
 		}
-	}
 
-	/* Notify controller that we stopped */
-	OOOICall(iMessagePumpController, stopped);
+		/* Notify controller that we stopped */
+		OOOICall(iMessagePumpController, stopped);
+		bStarted = TRUE;
+	}
+	return bStarted;
 }
 OOOMethodEnd
 
